@@ -4,7 +4,22 @@ A World of Warcraft addon that improves the default profession window.
 
 ## Features
 
-- **Options:** automatic messages, on an own page in the game options
+- **Shopping list:** a bag icon with a plus next to "Create" in the profession window adds the
+  selected recipe with the amount next to "Create" to a list. Its own window, styled like the
+  profession window, free or docked to its right or below it (option), shows all reagents the recipes
+  need in total, how many you have (bags and, where crafting may use it, the bank) and how many are
+  missing. The number of crafts can be changed in the list. A bag icon next to the chat link button
+  opens or closes the list, as does a button next to the search box of the auction house (option).
+  The number of crafts changes with "+" and "-" (Shift: 10). A click on a reagent searches it in
+  the open auction house. Stored per character.
+- **Own characters' professions:** every character is remembered account-wide with its
+  professions; the recipes of a profession are read when its window is opened. A reagent on the
+  shopping list that one of your characters of the same faction and ruleset (PvE, PvP, RP, ...)
+  can craft shows that profession's icon: e.g. bars for an engineer that your miner can smelt. A
+  click adds that recipe, marked with the character's name, and what it crafts counts towards the
+  reagent.
+- **Options:** automatic messages, where the shopping list docks and the auction house button, on an
+  own page in the game options
   (Esc > Options > AddOns > GryphonCraft).
 
 The full description for CurseForge and Wago is in [docs/addon-description.md](docs/addon-description.md).
@@ -62,8 +77,15 @@ GryphonCraft/
 ├── Core/
 │   ├── Init.lua           # Namespace, module registry, event dispatcher, defaults
 │   ├── Util.lua           # Print/Notify/Debug helpers, debug memory output, defaults merge
+│   ├── Names.lua          # Character names on Forever ("First Surname"), from GryphonMail
 │   └── Main.lua           # Bootstrap: saved variables, module lifecycle, slash commands
 └── Modules/
+    ├── Characters.lua     # Own characters account-wide: faction, ruleset ("/gryphoncraft chars")
+    ├── Professions.lua    # Professions of the own characters and the items they can craft
+    ├── ShoppingList.lua   # Shopping list data: recipes with counts, reagents added up ("/gryphoncraft list")
+    ├── ShoppingListFrame.lua # Shopping list window: recipes with editable counts, reagents owned/needed, docking
+    ├── AuctionHouseButton.lua # Button next to the auction house search box that opens the shopping list
+    ├── ProfessionsButton.lua # Profession window buttons: add (next to "Create"), open (next to chat link)
     └── Options.lua        # Options page in the game settings ("/gryphoncraft options")
 ```
 
@@ -100,6 +122,11 @@ Lint with [luacheck](https://github.com/lunarmodules/luacheck). Place `luacheck.
 - `/gryphoncraft` – help
 - `/gryphoncraft version` – show version
 - `/gryphoncraft options` – open the options page
+- `/gryphoncraft list` – open or close the shopping list
+- `/gryphoncraft list clear` – empty the shopping list
+- `/gryphoncraft chars` – list your characters with their professions; characters that can send
+  items to the current one are marked with a mailbox icon
+- `/gryphoncraft chars remove <number|name>` – forget a character
 - `/gryphoncraft notify on|off` – automatic messages (login, hints) of the current character,
   default on
 - `/gryphoncraft debug` – toggle debug output (after a `/reload`, also the memory each module keeps)

@@ -9,12 +9,24 @@ ns.modules = {}
 -- Account-wide (GryphonCraftDB, ns.db): settings and data shared by all characters.
 ns.defaults = {
     debug = false,
+    -- Own characters with their professions and craftable items, keyed by full name ("Name
+    -- Surname"). Filled by Modules/Characters.lua and Modules/Professions.lua.
+    characters = {},
+    -- Position of the shopping list window (point, relativePoint, x, y), empty until it is moved.
+    -- Set by Modules/ShoppingListFrame.lua.
+    shoppingListPosition = {},
+    -- Where the shopping list window docks to the profession window: "RIGHT", "BOTTOM" or "NONE".
+    shoppingListDock = "NONE",
+    -- Button in the auction house ("Buy" page) that opens the shopping list.
+    auctionHouseButton = true,
 }
 
 -- Per character (GryphonCraftCharDB, ns.charDb): data and settings only the logged-in character needs.
 ns.charDefaults = {
     -- Automatic messages (login, hints). Change with "/gryphoncraft notify on|off".
     notifications = true,
+    -- Recipes on the shopping list, in the order they were added. Filled by Modules/ShoppingList.lua.
+    shoppingList = {},
 }
 
 -- Registers a module. A module may implement:
