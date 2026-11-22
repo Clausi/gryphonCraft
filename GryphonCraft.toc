@@ -1,0 +1,29 @@
+## Interface: 16001
+## Title: GryphonCraft
+## Notes: Improves the default profession window.
+## Notes-deDE: Verbessert das Standard-Berufsfenster.
+## Notes-frFR: Améliore la fenêtre de métier standard.
+## Category: Professions
+## Author: cklausl
+## Version: 0.1.0
+## SavedVariables: GryphonCraftDB
+## SavedVariablesPerCharacter: GryphonCraftCharDB
+## IconTexture: Interface\Icons\Trade_BlackSmithing
+## X-Category: Professions
+## X-License: MIT
+## X-Website: https://github.com/Clausi/gryphonCraft
+
+# Localization (enUS must be loaded first, it is the fallback)
+Locales\enUS.lua
+Locales\deDE.lua
+Locales\frFR.lua
+
+# Core
+Core\Init.lua
+Core\Util.lua
+
+# Modules
+Modules\Options.lua
+
+# Bootstrap (must be loaded last)
+Core\Main.lua
