@@ -23,6 +23,35 @@ local function RegisterSettings()
             ns.charDb.notifications = value
         end)
     Settings.CreateCheckbox(category, notifications, L["OPTIONS_NOTIFICATIONS_TOOLTIP"])
+
+    local ShoppingListFrame = ns.modules.ShoppingListFrame
+    local dock = RegisterProxySetting("SHOPPING_LIST_DOCK", Settings.VarType.String,
+        L["OPTIONS_SHOPPING_LIST_DOCK"], ns.defaults.shoppingListDock,
+        function()
+            return ShoppingListFrame:GetDock()
+        end,
+        function(value)
+            ShoppingListFrame:SetDock(value)
+        end)
+    local function GetDockOptions()
+        local container = Settings.CreateControlTextContainer()
+        container:Add(ShoppingListFrame.DOCK_RIGHT, L["OPTIONS_SHOPPING_LIST_DOCK_RIGHT"])
+        container:Add(ShoppingListFrame.DOCK_BOTTOM, L["OPTIONS_SHOPPING_LIST_DOCK_BOTTOM"])
+        container:Add(ShoppingListFrame.DOCK_NONE, L["OPTIONS_SHOPPING_LIST_DOCK_NONE"])
+        return container:GetData()
+    end
+    Settings.CreateDropdown(category, dock, GetDockOptions, L["OPTIONS_SHOPPING_LIST_DOCK_TOOLTIP"])
+
+    local AuctionHouseButton = ns.modules.AuctionHouseButton
+    local auctionHouseButton = RegisterProxySetting("AUCTION_HOUSE_BUTTON", Settings.VarType.Boolean,
+        L["OPTIONS_AUCTION_HOUSE_BUTTON"], ns.defaults.auctionHouseButton,
+        function()
+            return AuctionHouseButton:IsEnabled()
+        end,
+        function(value)
+            AuctionHouseButton:SetEnabled(value)
+        end)
+    Settings.CreateCheckbox(category, auctionHouseButton, L["OPTIONS_AUCTION_HOUSE_BUTTON_TOOLTIP"])
 end
 
 function Options:OnInitialize()

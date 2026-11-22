@@ -26,17 +26,49 @@ read_globals = {
 
     -- API
     "C_AddOns",
+    "C_ClassColor",
+    "C_GameRules",
+    "Constants",
+    "Enum",
+    "GetProfessionInfo",
+    "GetProfessions",
+    "GetRealmName",
+    "UnitClass",
+    "UnitFactionGroup",
+    "UnitName",
+    "C_CurrencyInfo",
+    "C_Item",
+    "C_TradeSkillUI",
     "C_Timer",
     "CreateFrame",
     "GetLocale",
     "GetAddOnMemoryUsage",
     "UpdateAddOnMemoryUsage",
     "InCombatLockdown",
+    "IsModifiedClick",
+    "IsShiftKeyDown",
+    "HandleModifiedItemClick",
+    "PlaySound",
 
     -- UI helpers
     "Settings",
+    "ProfessionsUtil",
+    "GameTooltip_Hide",
 
     -- Frames
     "DEFAULT_CHAT_FRAME",
     "UIParent",
+    "GameTooltip",
+    "ProfessionsFrame",
+    "AuctionHouseFrame",
+
+    -- Constants and global strings
+    "SOUNDKIT",
+    "ITEM_QUALITY_COLORS",
+    "RETRIEVING_ITEM_INFO",
+    "GREEN_FONT_COLOR",
+    "RED_FONT_COLOR",
+    "GRAY_FONT_COLOR",
+    "NORMAL_FONT_COLOR",
+    "QUESTION_MARK_ICON",
 }
