@@ -82,6 +82,33 @@ end
 
 local SHIFT_STEP = 10
 
+-- Tooltip of the item the recipe makes; the recipe spell for recipes without an item (entries
+-- saved before the output item was stored, or recipes without one).
+local function ShowRecipeTooltip(self)
+    local entry = self.entry
+    if not entry then
+        return
+    end
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    if entry.outputItemID then
+        GameTooltip:SetItemByID(entry.outputItemID)
+    else
+        GameTooltip:SetSpellByID(entry.recipeID)
+    end
+    GameTooltip:Show()
+end
+
+-- Shift-click links the item in chat, Ctrl-click shows it in the dressing room.
+local function OnRecipeClick(self)
+    local itemID = self.entry and self.entry.outputItemID
+    if itemID and IsModifiedClick() then
+        local link = select(2, C_Item.GetItemInfo(itemID))
+        if link then
+            HandleModifiedItemClick(link)
+        end
+    end
+end
+
 local function ShowStepTooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:SetText(self.step > 0 and L["SHOPPING_LIST_INCREASE"] or L["SHOPPING_LIST_DECREASE"])
@@ -116,9 +143,13 @@ local function GetRecipeRow(index)
     if row then
         return row
     end
-    row = CreateFrame("Frame", nil, content)
+    row = CreateFrame("Button", nil, content)
     row:SetHeight(ROW_HEIGHT)
     CreateIcon(row)
+    row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+    row:SetScript("OnEnter", ShowRecipeTooltip)
+    row:SetScript("OnLeave", HideTooltip)
+    row:SetScript("OnClick", OnRecipeClick)
 
     row.Remove = CreateFrame("Button", nil, row)
     row.Remove:SetSize(16, 16)
