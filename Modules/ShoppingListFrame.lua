@@ -316,6 +316,11 @@ local function GetReagentRow(index)
         else
             GameTooltip:SetItemByID(option.itemID)
             GameTooltip:AddLine(" ")
+            if self.total.elsewhere > 0 then
+                -- Syndicator's lines above list the characters; this is the part that can be sent.
+                GameTooltip:AddLine(format(L["SHOPPING_LIST_ELSEWHERE"], self.total.elsewhere),
+                    LIGHTBLUE_FONT_COLOR:GetRGB())
+            end
             local hint = GetOwnCraft(self.total) and L["SHOPPING_LIST_HINT_REAGENT_RECIPE"]
                 or L["SHOPPING_LIST_SEARCH_HINT"]
             GameTooltip:AddLine(hint, GREEN_FONT_COLOR:GetRGB())
@@ -369,6 +374,9 @@ local function FormatCount(total)
     text = color:WrapTextInColorCode(text)
     if total.planned > 0 then
         text = text .. " " .. NORMAL_FONT_COLOR:WrapTextInColorCode(format("+%d", total.planned))
+    end
+    if total.elsewhere > 0 then
+        text = text .. " " .. LIGHTBLUE_FONT_COLOR:WrapTextInColorCode(format("(%d)", total.elsewhere))
     end
     return text
 end
@@ -591,6 +599,14 @@ function ShoppingListFrame:OnInitialize()
     ns:RegisterEvent("BAG_UPDATE_DELAYED", ScheduleRefresh)
     ns:RegisterEvent("CURRENCY_DISPLAY_UPDATE", ScheduleRefresh)
     ns:RegisterEvent("GET_ITEM_INFO_RECEIVED", ScheduleRefresh)
+    -- Syndicator (optional) caches bags, bank and mail after the game's events, so the counts of
+    -- other places are only current after its own updates; "Ready" comes once its data is loaded.
+    local registry = Syndicator and Syndicator.CallbackRegistry
+    if registry then
+        for _, event in ipairs({ "Ready", "BagCacheUpdate", "MailCacheUpdate" }) do
+            registry:RegisterCallback(event, ScheduleRefresh, self)
+        end
+    end
 end
 
 -- Opens a list that is not empty on login (after ShoppingList:OnEnable took over old lists), unless

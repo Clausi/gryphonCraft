@@ -6,6 +6,7 @@
 ## Category: Professions
 ## Author: cklausl
 ## Version: 0.1.0
+## OptionalDeps: Syndicator
 ## SavedVariables: GryphonCraftDB
 ## SavedVariablesPerCharacter: GryphonCraftCharDB
 ## IconTexture: Interface\Icons\Trade_BlackSmithing

@@ -33,6 +33,7 @@ L["SHOPPING_LIST_ADD_TOOLTIP"] = "Adds the selected recipe with the amount next 
 L["SHOPPING_LIST_OPEN_TOOLTIP"] = "Right-click: open or close the shopping list."
 L["SHOPPING_LIST_TOGGLE_TOOLTIP"] = "Opens or closes the shopping list."
 L["SHOPPING_LIST_SEARCH_HINT"] = "Click: search in the auction house"
+L["SHOPPING_LIST_ELSEWHERE"] = "In bank, mail and on characters you can send to: %d"
 L["SHOPPING_LIST_AH_CLOSED"] = "Open the auction house to search for the item."
 L["SHOPPING_LIST_RECIPES"] = "Recipes"
 L["SHOPPING_LIST_REAGENTS"] = "Reagents (owned/needed)"

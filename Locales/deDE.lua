@@ -30,6 +30,7 @@ L["SHOPPING_LIST_ADD_TOOLTIP"] = "Fügt das gewählte Rezept mit der Anzahl nebe
 L["SHOPPING_LIST_OPEN_TOOLTIP"] = "Rechtsklick: Einkaufsliste öffnen oder schließen."
 L["SHOPPING_LIST_TOGGLE_TOOLTIP"] = "Öffnet oder schließt die Einkaufsliste."
 L["SHOPPING_LIST_SEARCH_HINT"] = "Klick: im Auktionshaus suchen"
+L["SHOPPING_LIST_ELSEWHERE"] = "In Bank, Post und auf Charakteren, an die du senden kannst: %d"
 L["SHOPPING_LIST_AH_CLOSED"] = "Öffne das Auktionshaus, um nach dem Gegenstand zu suchen."
 L["SHOPPING_LIST_RECIPES"] = "Rezepte"
 L["SHOPPING_LIST_REAGENTS"] = "Reagenzien (vorhanden/benötigt)"

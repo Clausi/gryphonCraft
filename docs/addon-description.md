@@ -16,6 +16,8 @@ Improves the default profession window of World of Warcraft Forever, without rep
 - **Your other characters:** GryphonCraft remembers the professions of all your characters. If one
   of them (same faction and ruleset) can craft a reagent, e.g. your miner smelting bars for your
   engineer, the shopping list shows it, and one click adds that recipe with the ore it needs.
+- **Syndicator (optional):** with Syndicator installed, the shopping list shows in blue how many of
+  a reagent are in your bank and mail and on your other characters you can send items to.
 - Options page in the game settings (Esc > Options > AddOns > GryphonCraft).
 
 ## Commands

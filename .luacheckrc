@@ -61,12 +61,14 @@ read_globals = {
     "GameTooltip",
     "ProfessionsFrame",
     "AuctionHouseFrame",
+    "Syndicator",
 
     -- Constants and global strings
     "SOUNDKIT",
     "ITEM_QUALITY_COLORS",
     "RETRIEVING_ITEM_INFO",
     "GREEN_FONT_COLOR",
+    "LIGHTBLUE_FONT_COLOR",
     "RED_FONT_COLOR",
     "GRAY_FONT_COLOR",
     "NORMAL_FONT_COLOR",

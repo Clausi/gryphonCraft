@@ -31,6 +31,7 @@ L["SHOPPING_LIST_ADD_TOOLTIP"] = "Ajoute la recette choisie avec la quantité à
 L["SHOPPING_LIST_OPEN_TOOLTIP"] = "Clic droit : ouvrir ou fermer la liste de courses."
 L["SHOPPING_LIST_TOGGLE_TOOLTIP"] = "Ouvre ou ferme la liste de courses."
 L["SHOPPING_LIST_SEARCH_HINT"] = "Clic : rechercher à l'hôtel des ventes"
+L["SHOPPING_LIST_ELSEWHERE"] = "En banque, par courrier et sur les personnages auxquels tu peux envoyer : %d"
 L["SHOPPING_LIST_AH_CLOSED"] = "Ouvrez l'hôtel des ventes pour rechercher l'objet."
 L["SHOPPING_LIST_RECIPES"] = "Recettes"
 L["SHOPPING_LIST_REAGENTS"] = "Composants (possédés/nécessaires)"
