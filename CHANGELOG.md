@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-23
+
+First release, for WoW Forever.
+
 ### Added
 
 - Shopping list: the bag icon with a plus next to "Create" in the profession window adds the
