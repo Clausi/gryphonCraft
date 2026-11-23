@@ -11,7 +11,11 @@ A World of Warcraft addon that improves the default profession window.
   missing. The number of crafts can be changed in the list. A bag icon next to the chat link button
   opens or closes the list, as does a button next to the search box of the auction house (option).
   The number of crafts changes with "+" and "-" (Shift: 10). A click on a reagent searches it in
-  the open auction house. Stored per character.
+  the open auction house. The list is shared by all characters of the account (reagents can be
+  gathered or crafted on several of them) and opens on login when it is not empty (option). A click
+  on a recipe opens or selects it in the profession window, a second click crafts it; with the
+  profession window open, a click on a reagent selects its recipe. Finished crafts are taken off
+  the list.
 - **Own characters' professions:** every character is remembered account-wide with its
   professions; the recipes of a profession are read when its window is opened. A reagent on the
   shopping list that one of your characters of the same faction and ruleset (PvE, PvP, RP, ...)

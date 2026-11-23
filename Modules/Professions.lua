@@ -134,6 +134,11 @@ function Professions:OnEnable()
     RecordProfessions()
 end
 
+-- True while the profession window shows the logged-in character's own list.
+function Professions:IsOwnTradeSkill()
+    return IsOwnTradeSkill()
+end
+
 -- callback() runs after professions or crafts changed.
 function Professions:OnUpdate(callback)
     listeners[#listeners + 1] = callback

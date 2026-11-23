@@ -31,6 +31,10 @@ amount from `CraftingPage.CreateMultipleInputBox` (0 and disabled when nothing c
 `ProfessionsFrame` by anchoring the own frame and follows it with `HookScript` (OnShow, OnHide).
 A click on a reagent searches the open auction house like Blizzard's gamepad reagent action
 (`AuctionHouseFrame:SetSearchText`, then `SearchBar.SearchButton:Click()`).
+A click on a recipe of the list selects it with `C_TradeSkillUI.OpenRecipe` (as Blizzard's recipe
+tracker; Blizzard's own `OPEN_RECIPE_RESPONSE` handler applies it) and crafts it with
+`C_TradeSkillUI.CraftRecipe` (`ProfessionsButton:DoRecipeAction`); Blizzard's "Create" button is
+never clicked.
 `Modules/AuctionHouseButton.lua` adds an own button to `AuctionHouseFrame.SearchBar` (load on demand,
 `Blizzard_AuctionHouseUI`), anchored to its `SearchBox`.
 Do not change Blizzard's controls, their anchors or scripts.
@@ -41,8 +45,9 @@ Do not change Blizzard's controls, their anchors or scripts.
 
 ## Saved variables
 
-`GryphonCraftDB` (account-wide: characters with professions and craftable items, window settings)
-and `GryphonCraftCharDB` (per character: the shopping list).
+`GryphonCraftDB` (account-wide: characters with professions and craftable items, the shopping list,
+window settings) and `GryphonCraftCharDB` (per character: automatic messages). Lists each character
+kept before the list was shared are moved into the shared list on that character's login.
 
 ## Commit scopes
 

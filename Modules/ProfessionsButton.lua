@@ -131,3 +131,44 @@ function ProfessionsButton:OnEnable()
         end)
     end
 end
+
+-- What a click on a recipe of the shopping list does in the profession window, for the logged-in
+-- character's own recipes (entry.crafter, see ShoppingList):
+--   "open"    profession window closed: opens it at the recipe
+--   "select"  window open, another recipe selected: selects the recipe
+--   "craft"   the recipe is selected: crafts it, as many times as the list wants and the reagents
+--             allow (count, may be 0)
+-- nil for recipes of other characters or a profession the character does not have. Selecting goes
+-- through C_TradeSkillUI.OpenRecipe like Blizzard's recipe tracker, whose response Blizzard's own
+-- event handler applies; crafting calls C_TradeSkillUI.CraftRecipe directly. Blizzard's controls
+-- are not clicked or changed.
+function ProfessionsButton:GetRecipeAction(entry)
+    local playerName = ns.modules.Characters:GetPlayerName()
+    if (entry.crafter and entry.crafter ~= playerName)
+            or not C_TradeSkillUI.IsRecipeProfessionLearned(entry.recipeID) then
+        return nil
+    end
+    if not (ProfessionsFrame and ProfessionsFrame:IsShown() and ns.modules.Professions:IsOwnTradeSkill()) then
+        return "open"
+    end
+    local selected = GetCraftingPage().SchematicForm:GetRecipeInfo()
+    if not (selected and selected.recipeID == entry.recipeID) then
+        return "select"
+    end
+    local craftable = C_TradeSkillUI.GetCraftableCount(entry.recipeID, entry.recipeLevel) or 0
+    return "craft", math.min(entry.count, craftable)
+end
+
+function ProfessionsButton:DoRecipeAction(entry)
+    local action, count = self:GetRecipeAction(entry)
+    if action == "open" or action == "select" then
+        C_TradeSkillUI.OpenRecipe(entry.recipeID)
+    elseif action == "craft" then
+        if count > 0 then
+            C_TradeSkillUI.CraftRecipe(entry.recipeID, count, nil, entry.recipeLevel)
+        else
+            ns:Print(L["SHOPPING_LIST_CANNOT_CRAFT"], entry.name)
+        end
+    end
+    return action ~= nil
+end

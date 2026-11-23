@@ -95,17 +95,43 @@ local function ShowRecipeTooltip(self)
     else
         GameTooltip:SetSpellByID(entry.recipeID)
     end
+    local action, count = ns.modules.ProfessionsButton:GetRecipeAction(entry)
+    local hint
+    if action == "open" then
+        hint = L["SHOPPING_LIST_HINT_OPEN"]
+    elseif action == "select" then
+        hint = L["SHOPPING_LIST_HINT_SELECT"]
+    elseif action == "craft" and count > 0 then
+        hint = format(L["SHOPPING_LIST_HINT_CRAFT"], count)
+    elseif action == "craft" then
+        hint = L["SHOPPING_LIST_HINT_NO_REAGENTS"]
+    end
+    if hint then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine(hint, GREEN_FONT_COLOR:GetRGB())
+    end
     GameTooltip:Show()
 end
 
--- Shift-click links the item in chat, Ctrl-click shows it in the dressing room.
+-- Click opens, selects or crafts the recipe in the profession window (ProfessionsButton:
+-- DoRecipeAction). Shift-click links the item in chat, Ctrl-click shows it in the dressing room.
 local function OnRecipeClick(self)
-    local itemID = self.entry and self.entry.outputItemID
-    if itemID and IsModifiedClick() then
-        local link = select(2, C_Item.GetItemInfo(itemID))
+    local entry = self.entry
+    if not entry then
+        return
+    end
+    if IsModifiedClick() then
+        local link = entry.outputItemID and select(2, C_Item.GetItemInfo(entry.outputItemID))
         if link then
             HandleModifiedItemClick(link)
         end
+    elseif ns.modules.ProfessionsButton:DoRecipeAction(entry) and self:IsMouseOver() then
+        -- The hint changes with the selection; it follows once Blizzard has applied it.
+        C_Timer.After(0.2, function()
+            if self:IsMouseOver() then
+                ShowRecipeTooltip(self)
+            end
+        end)
     end
 end
 
@@ -208,8 +234,24 @@ end
 -- Searches the item in the open auction house, the way Blizzard's profession window does it for
 -- reagents with a gamepad (Blizzard_ProfessionsFrame.lua): the name into the search box, then a
 -- click on its search button.
+local function IsAuctionHouseOpen()
+    return AuctionHouseFrame ~= nil and AuctionHouseFrame:IsVisible()
+end
+
+-- The logged-in character's recipe for a reagent while its profession window is open, or nil.
+local function GetOwnCraft(total)
+    if not (total and ProfessionsFrame and ProfessionsFrame:IsShown()) then
+        return nil
+    end
+    for _, crafter in ipairs(total.crafters) do
+        if crafter.isCurrent then
+            return crafter
+        end
+    end
+end
+
 local function SearchAuctionHouse(itemID)
-    if not (AuctionHouseFrame and AuctionHouseFrame:IsVisible()) then
+    if not IsAuctionHouseOpen() then
         ns:Print(L["SHOPPING_LIST_AH_CLOSED"])
         return
     end
@@ -274,14 +316,17 @@ local function GetReagentRow(index)
         else
             GameTooltip:SetItemByID(option.itemID)
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine(L["SHOPPING_LIST_SEARCH_HINT"], GREEN_FONT_COLOR:GetRGB())
+            local hint = GetOwnCraft(self.total) and L["SHOPPING_LIST_HINT_REAGENT_RECIPE"]
+                or L["SHOPPING_LIST_SEARCH_HINT"]
+            GameTooltip:AddLine(hint, GREEN_FONT_COLOR:GetRGB())
         end
         GameTooltip:Show()
     end)
     row:SetScript("OnLeave", HideTooltip)
-    -- Click searches the auction house while it is open. Shift-click links the item in chat (with
-    -- the auction house open, Blizzard puts it into its search box), Ctrl-click shows it in the
-    -- dressing room.
+    -- Click searches the auction house while it is open; in the profession window it selects the
+    -- reagent's recipe when the logged-in character can craft it. Shift-click links the item in chat
+    -- (with the auction house open, Blizzard puts it into its search box), Ctrl-click shows it in
+    -- the dressing room.
     row:SetScript("OnClick", function(self)
         local itemID = self.option.itemID
         if not itemID then
@@ -292,6 +337,8 @@ local function GetReagentRow(index)
             if link then
                 HandleModifiedItemClick(link)
             end
+        elseif not IsAuctionHouseOpen() and GetOwnCraft(self.total) then
+            C_TradeSkillUI.OpenRecipe(GetOwnCraft(self.total).recipeID)
         else
             SearchAuctionHouse(itemID)
         end
@@ -339,7 +386,8 @@ local function Refresh()
         local row = GetRecipeRow(index)
         row.entry = entry
         row.Icon:SetTexture(entry.icon)
-        if entry.crafter then
+        -- The crafter's name only for other characters than the logged-in one.
+        if entry.crafter and entry.crafter ~= ns.modules.Characters:GetPlayerName() then
             row.Name:SetText(entry.name .. " " .. ns.modules.Characters:ColorizeName(entry.crafter))
         else
             row.Name:SetText(entry.name)
@@ -543,6 +591,14 @@ function ShoppingListFrame:OnInitialize()
     ns:RegisterEvent("BAG_UPDATE_DELAYED", ScheduleRefresh)
     ns:RegisterEvent("CURRENCY_DISPLAY_UPDATE", ScheduleRefresh)
     ns:RegisterEvent("GET_ITEM_INFO_RECEIVED", ScheduleRefresh)
+end
+
+-- Opens a list that is not empty on login (after ShoppingList:OnEnable took over old lists), unless
+-- turned off (ns.db.shoppingListOpenOnLogin).
+function ShoppingListFrame:OnEnable()
+    if ns.db.shoppingListOpenOnLogin and #ShoppingList:GetEntries() > 0 then
+        self:Show()
+    end
 end
 
 -- Called once Blizzard_Professions is loaded (Modules/ProfessionsButton.lua). HookScript only adds
