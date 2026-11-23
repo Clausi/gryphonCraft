@@ -16,7 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   right of or below the profession window, or stays free (option). The bag icon next to the chat
   link button opens it, as does a button next to the search box of the auction house (option). A
   click on a reagent searches it in the open auction house. Recipes and reagents show the item
-  tooltip.
+  tooltip. The list is shared by all your characters, so reagents can be gathered or crafted on
+  several of them, and opens on login when it is not empty (option). A click on a recipe opens
+  or selects it in the profession window, a second click crafts it; in the profession window a
+  click on a reagent selects its recipe. Finished crafts are taken off the list.
 - Own characters and their professions are remembered account-wide ("/gryphoncraft chars"). A
   reagent that one of your characters of the same faction and ruleset can craft shows its
   profession icon in the shopping list; a click adds that character's recipe, and what it crafts

@@ -42,6 +42,16 @@ local function RegisterSettings()
     end
     Settings.CreateDropdown(category, dock, GetDockOptions, L["OPTIONS_SHOPPING_LIST_DOCK_TOOLTIP"])
 
+    local openOnLogin = RegisterProxySetting("SHOPPING_LIST_OPEN_ON_LOGIN", Settings.VarType.Boolean,
+        L["OPTIONS_SHOPPING_LIST_OPEN_ON_LOGIN"], ns.defaults.shoppingListOpenOnLogin,
+        function()
+            return ns.db.shoppingListOpenOnLogin
+        end,
+        function(value)
+            ns.db.shoppingListOpenOnLogin = value
+        end)
+    Settings.CreateCheckbox(category, openOnLogin, L["OPTIONS_SHOPPING_LIST_OPEN_ON_LOGIN_TOOLTIP"])
+
     local AuctionHouseButton = ns.modules.AuctionHouseButton
     local auctionHouseButton = RegisterProxySetting("AUCTION_HOUSE_BUTTON", Settings.VarType.Boolean,
         L["OPTIONS_AUCTION_HOUSE_BUTTON"], ns.defaults.auctionHouseButton,

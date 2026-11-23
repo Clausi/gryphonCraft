@@ -9,6 +9,10 @@ Improves the default profession window of World of Warcraft Forever, without rep
   on the list need, how many you have and what is still missing. The number of crafts can be
   changed in the list. The bag icon next to the chat link button opens it at any time. Click a
   reagent to search it in the auction house; a button next to its search box opens the list there.
+- **Craft from the list:** click a recipe to show it in the profession window, click again to
+  craft it. Finished crafts are taken off the list.
+- **One list for all characters:** log in on another character and the same list is there, so
+  you can gather or craft the reagents wherever it fits.
 - **Your other characters:** GryphonCraft remembers the professions of all your characters. If one
   of them (same faction and ruleset) can craft a reagent, e.g. your miner smelting bars for your
   engineer, the shopping list shows it, and one click adds that recipe with the ore it needs.

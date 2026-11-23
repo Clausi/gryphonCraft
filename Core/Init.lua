@@ -19,14 +19,17 @@ ns.defaults = {
     shoppingListDock = "NONE",
     -- Button in the auction house ("Buy" page) that opens the shopping list.
     auctionHouseButton = true,
+    -- Recipes on the shopping list, shared by all characters, in the order they were added. Filled
+    -- by Modules/ShoppingList.lua.
+    shoppingList = {},
+    -- Opens the shopping list on login when it is not empty.
+    shoppingListOpenOnLogin = true,
 }
 
 -- Per character (GryphonCraftCharDB, ns.charDb): data and settings only the logged-in character needs.
 ns.charDefaults = {
     -- Automatic messages (login, hints). Change with "/gryphoncraft notify on|off".
     notifications = true,
-    -- Recipes on the shopping list, in the order they were added. Filled by Modules/ShoppingList.lua.
-    shoppingList = {},
 }
 
 -- Registers a module. A module may implement:

@@ -1,16 +1,17 @@
 local _, ns = ...
 local L = ns.L
 
--- Shopping list of the current character: recipes with the number of crafts, and the reagents they
--- need in total compared with what the character has. Filled from the profession window
+-- Shopping list shared by all characters of the account: recipes with the number of crafts, and the
+-- reagents they need in total compared with what the logged-in character has. So reagents can be
+-- gathered or crafted on several characters. Filled from the profession window
 -- (Modules/ProfessionsButton.lua), shown by Modules/ShoppingListFrame.lua.
 --
--- Each entry of ns.charDb.shoppingList keeps the required reagents of its recipe as read when it was
--- added, so the list also works while the profession window is closed:
+-- Each entry of ns.db.shoppingList keeps the required reagents of its recipe as read when it was
+-- added, so the list also works while the profession window is closed and on other characters:
 --   { recipeID, recipeLevel, name, icon, count, reagents = { { options = { reagent, ... }, quantity } },
 --     outputItemID, outputQuantity, crafter }
--- crafter is the full name of another own character that crafts it (e.g. a miner smelting bars for
--- an engineer), nil for the logged-in character.
+-- crafter is the full name of the character that crafts it (e.g. a miner smelting bars for an
+-- engineer).
 -- A reagent slot can be filled by several items (e.g. crafting qualities); options holds them all as
 -- { itemID = n } or { currencyID = n }, like the reagents of C_TradeSkillUI.GetRecipeSchematic.
 local ShoppingList = ns:RegisterModule("ShoppingList")
@@ -22,7 +23,7 @@ ShoppingList.ICON = "Interface\\Icons\\INV_Misc_Bag_10"
 local callbacks = {}
 
 local function GetEntries()
-    return ns.charDb.shoppingList
+    return ns.db.shoppingList
 end
 
 local function NotifyChanged()
@@ -113,17 +114,62 @@ end
 -- crafts added. recipeInfo is the TradeSkillRecipeInfo of the profession window (name and icon).
 -- Returns the entry, or nil if the recipe has no required reagents.
 function ShoppingList:Add(recipeInfo, recipeLevel, count)
-    return AddRecipe(recipeInfo.recipeID, recipeLevel, count, recipeInfo.name, recipeInfo.icon, nil)
+    return AddRecipe(recipeInfo.recipeID, recipeLevel, count, recipeInfo.name, recipeInfo.icon,
+        ns.modules.Characters:GetPlayerName())
 end
 
 -- Adds the recipe of a crafter (an entry of Professions:GetCrafters) that makes a reagent on the
--- list, with enough crafts for what is still missing (at least 1). Entries of other characters
--- show their name; what they craft counts towards the reagent.
+-- list, with enough crafts for what is still missing (at least 1). What it crafts counts towards
+-- the reagent.
 function ShoppingList:AddCraft(crafter, missing)
     local schematic = C_TradeSkillUI.GetRecipeSchematic(crafter.recipeID, false)
     local quantity = math.max(schematic and schematic.quantityMin or 1, 1)
     local count = math.max(1, math.ceil(missing / quantity))
-    return AddRecipe(crafter.recipeID, nil, count, nil, nil, not crafter.isCurrent and crafter.fullName or nil)
+    return AddRecipe(crafter.recipeID, nil, count, nil, nil, crafter.fullName)
+end
+
+-- Takes over the list each character kept before it was shared (ns.charDb.shoppingList): its
+-- recipes join the shared list, crafted by that character unless another one was set.
+local function MigrateCharacterList()
+    local oldEntries = ns.charDb.shoppingList
+    if type(oldEntries) ~= "table" then
+        return
+    end
+    local playerName = ns.modules.Characters:GetPlayerName()
+    for _, oldEntry in ipairs(oldEntries) do
+        oldEntry.crafter = oldEntry.crafter or playerName
+        local entry = FindEntry(oldEntry.recipeID, oldEntry.recipeLevel)
+        if entry then
+            entry.count = ClampCount(entry.count + oldEntry.count)
+        else
+            local entries = GetEntries()
+            entries[#entries + 1] = oldEntry
+        end
+    end
+    ns.charDb.shoppingList = nil
+end
+
+-- A finished craft of the logged-in character takes one craft off its recipe on the list (the
+-- recipe goes at 0), so the reagents it used are no longer counted as needed. Also for crafts with
+-- Blizzard's "Create" button. Recipe IDs are spell IDs. Event arguments may be secret values.
+local function OnSpellcastSucceeded(_, unit, _, spellID)
+    if unit ~= "player" or issecretvalue(spellID) then
+        return
+    end
+    local playerName = ns.modules.Characters:GetPlayerName()
+    for _, entry in ipairs(GetEntries()) do
+        if entry.recipeID == spellID and (entry.crafter == nil or entry.crafter == playerName) then
+            ShoppingList:SetCount(entry, entry.count - 1)
+            return
+        end
+    end
+end
+
+-- After Characters:OnEnable, which knows the logged-in character.
+function ShoppingList:OnEnable()
+    MigrateCharacterList()
+    NotifyChanged()
+    ns:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", OnSpellcastSucceeded)
 end
 
 -- Sets the number of crafts of an entry; 0 removes it.
