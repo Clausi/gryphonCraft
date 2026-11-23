@@ -203,7 +203,9 @@ end
 
 -- True if items can go between the logged-in character and the stored one: the character itself,
 -- or one of the same faction and ruleset (mail).
-function Characters:CanTrade(fullName)
+-- A character that was never recorded here (never logged in with this addon) is judged by the
+-- optional fallbackFaction and fallbackRuleset, e.g. from another addon's data.
+function Characters:CanTrade(fullName, fallbackFaction, fallbackRuleset)
     if not player then
         return false
     end
@@ -211,6 +213,9 @@ function Characters:CanTrade(fullName)
         return true
     end
     local info = ns.db.characters[fullName]
+    if not info and fallbackFaction then
+        info = { faction = fallbackFaction, ruleset = fallbackRuleset }
+    end
     if not info or info.faction ~= player.faction then
         return false
     end

@@ -24,5 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reagent that one of your characters of the same faction and ruleset can craft shows its
   profession icon in the shopping list; a click adds that character's recipe, and what it crafts
   counts towards the reagent. A profession's recipes are read when its window is opened.
+- With Syndicator installed, a reagent in the shopping list shows in blue how many are elsewhere:
+  in the bank and mail of the logged-in character (Blizzard counts the bank only while it is open)
+  and in the bags, bank and mail of your other characters you can send items to. The tooltip
+  repeats the sum; Syndicator's own tooltip lines list where the items are.
 - Addon structure: slash command `/gryphoncraft` (version, debug, notify, options) and an options
   page in the game settings (Esc > Options > AddOns > GryphonCraft).

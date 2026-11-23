@@ -22,6 +22,10 @@ A World of Warcraft addon that improves the default profession window.
   can craft shows that profession's icon: e.g. bars for an engineer that your miner can smelt. A
   click adds that recipe, marked with the character's name, and what it crafts counts towards the
   reagent.
+- **Syndicator (optional):** with [Syndicator](https://www.curseforge.com/wow/addons/syndicator)
+  installed, a reagent on the shopping list shows in blue how many are elsewhere: in the bank and
+  mail of the logged-in character and in the bags, bank and mail of your other characters of the
+  same faction and ruleset. Syndicator's own item tooltip lists where they are.
 - **Options:** automatic messages, where the shopping list docks and the auction house button, on an
   own page in the game options
   (Esc > Options > AddOns > GryphonCraft).

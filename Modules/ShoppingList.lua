@@ -205,8 +205,41 @@ local function GetReagentKey(options)
     return first.itemID and ("item:" .. first.itemID) or ("currency:" .. first.currencyID)
 end
 
+-- Items held elsewhere (Syndicator, optional): bags, bank and mail of every other character the
+-- logged-in one can send items to (Characters:CanTrade), plus what the logged-in character has in
+-- its bank and mail beyond the owned count (Blizzard counts the bank only while it is open).
+-- Syndicator's own item tooltip lists where they are, so only the sum is kept here.
+-- 0 without Syndicator.
+local function CountElsewhere(itemIDs, owned)
+    local api = Syndicator and Syndicator.API
+    if not (api and api.IsReady()) then
+        return 0
+    end
+    local characters = ns.modules.Characters
+    local playerName = characters:GetPlayerName()
+    local sum, own = 0, 0
+    for _, itemID in ipairs(itemIDs) do
+        local info = api.GetInventoryInfoByItemID(itemID, false, true)
+        for _, held in ipairs(info and info.characters or {}) do
+            if held.character == playerName then
+                own = own + held.bags + held.bank + held.mail
+            else
+                -- Syndicator names the ruleset as the realm ("PvE") and knows the faction of
+                -- characters that never logged in with this addon.
+                local data = api.GetCharacter(held.character .. "-" .. held.realmNormalized)
+                local details = data and data.details
+                if characters:CanTrade(held.character, details and details.faction, held.realmNormalized) then
+                    sum = sum + held.bags + held.bank + held.mail
+                end
+            end
+        end
+    end
+    return sum + math.max(0, own - owned)
+end
+
 -- The reagents of all entries added up, in the order they first appear:
---   { { options, needed, owned, planned, missing, crafters }, ... }
+--   { { options, needed, owned, planned, missing, elsewhere, crafters }, ... }
+-- elsewhere: how many are in other places, see CountElsewhere.
 -- owned counts all options of the slot, with the bank where Blizzard's crafting would use it too
 -- (ProfessionsUtil.AccumulateReagentsInPossession, as the reagent slots of the profession window).
 -- planned is what entries of the list craft of it, missing = needed - owned - planned (at least 0).
@@ -243,6 +276,7 @@ function ShoppingList:GetReagentTotals()
             end
         end
         total.missing = math.max(0, total.needed - total.owned - total.planned)
+        total.elsewhere = CountElsewhere(itemIDs, total.owned)
         total.crafters = #itemIDs > 0 and ns.modules.Professions:GetCrafters(itemIDs) or {}
     end
     return totals
